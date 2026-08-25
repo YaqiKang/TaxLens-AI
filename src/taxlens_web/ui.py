@@ -71,9 +71,10 @@ def apply_page_style() -> None:
       .meta-chip strong { color:var(--ink); }
       .primary-nav-spacer { height:12px; }
       .primary-nav-bottom { height:10px; }
-      .st-key-nav_upload button, .st-key-nav_check button, .st-key-nav_overview button,
-      .st-key-nav_detail button, .st-key-nav_review button {
-        min-height:50px; font-size:1.02rem; font-weight:700;
+      .st-key-nav_upload .stButton > button, .st-key-nav_check .stButton > button,
+      .st-key-nav_overview .stButton > button, .st-key-nav_detail .stButton > button,
+      .st-key-nav_review .stButton > button {
+        min-height:50px !important; font-size:1.02rem !important; font-weight:700;
       }
       .page-title { font-size:2rem; line-height:1.18; font-weight:790; color:var(--ink); margin:.7rem 0 .35rem; }
       .page-lead { color:var(--muted); font-size:1.06rem; margin-bottom:1.25rem; }
