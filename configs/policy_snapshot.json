@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.1",
+  "knowledge_base_updated_at": "2026-08-25",
+  "policy_id": "PRC_CIT_EQUIPMENT_ONE_TIME_DEDUCTION_2024_2027_ACQUISITIONS",
+  "policy_name": "新购进设备、器具一次性税前扣除政策影响评估",
+  "demo_scope": {
+    "assessment_year": 2026,
+    "supported_assessment_years": [2026],
+    "unsupported_year_handling": "除2026外的扣除所属年度，当前MVP均阻断评估并标记为需要进一步政策确认"
+  },
+  "period_definitions": {
+    "asset_acquisition_policy_window": {
+      "start": "2024-01-01",
+      "end": "2027-12-31",
+      "meaning": "财政部 税务总局公告2023年第37号规定的新购进设备、器具期间",
+      "not_equivalent_to": "所有可能的扣除所属年度范围"
+    },
+    "deduction_year": {
+      "rule": "固定资产在投入使用月份的次月所属年度一次性税前扣除",
+      "meaning": "由投入使用日期独立推导，不把2024—2027直接当作扣除年度范围"
+    }
+  },
+  "deterministic_policy_values": {
+    "unit_tax_basis_threshold_cny": "5000000.00",
+    "threshold_inclusive": true,
+    "threshold_scope": "单台（套）单位价值，不使用批次总金额",
+    "excluded_asset_nature": ["房屋", "建筑物"],
+    "used_equipment_rule": "以货币形式购进的固定资产包括购进的使用过的固定资产；新购进不等于必须为全新设备",
+    "acquisition_date_mapping": {
+      "普通购进": "invoice_date",
+      "分期或赊销": "arrival_date",
+      "自行建造": "completion_settlement_date"
+    },
+    "choice_required": true
+  },
+  "core_official_sources": [
+    {
+      "source_id": "MOF_STA_2023_37",
+      "policy_name": "关于设备、器具扣除有关企业所得税政策的公告",
+      "document_number": "财政部 税务总局公告2023年第37号",
+      "issuing_authorities": ["财政部", "国家税务总局"],
+      "document_date": "2023-08-18",
+      "status": "全文有效",
+      "applicable_period_type": "资产购进政策窗口",
+      "applicable_period_start": "2024-01-01",
+      "applicable_period_end": "2027-12-31",
+      "official_url": "https://shanghai.chinatax.gov.cn/zcfw/zcfgk/qysds/202309/t468599.html",
+      "bound_rules": [
+        "资产购进政策窗口",
+        "单台（套）单位价值不超过500万元",
+        "设备、器具不包括房屋、建筑物"
+      ]
+    },
+    {
+      "source_id": "STA_2018_46",
+      "policy_name": "国家税务总局关于设备 器具扣除有关企业所得税政策执行问题的公告",
+      "document_number": "国家税务总局公告2018年第46号",
+      "issuing_authorities": ["国家税务总局"],
+      "document_date": "2018-08-23",
+      "status": "全文有效",
+      "applicable_period_type": "执行口径依据",
+      "official_url": "https://fgk.chinatax.gov.cn/zcfgk/c100012/c5194819/content.html",
+      "bound_rules": [
+        "新购进包括以货币形式购进的使用过的固定资产",
+        "普通购进按发票开具时间确认购进时点",
+        "分期付款或赊销按固定资产到货时间确认购进时点",
+        "自行建造按竣工结算时间确认购进时点",
+        "投入使用月份的次月所属年度一次性税前扣除",
+        "企业可自行选择享受且应留存备查资料"
+      ]
+    }
+  ],
+  "source_governance": {
+    "deterministic_rule_source_requirement": "确定性规则必须绑定财政部、国家税务总局或其官方政策法规库原文",
+    "third_party_interpretation_policy": "第三方解读不得作为确定性规则的唯一依据",
+    "conflict_handling": "若结构化字段、关键词提示或政策依据存在冲突，转为需人工复核或当前MVP不支持，不自行补充结论"
+  },
+  "not_determined_by_rules": [
+    "资产名称或描述中的关键词仅用于触发人工复核，不替代资产性质判断",
+    "资产描述所对应的实质性质，若结构化字段不明确或相互冲突，必须人工复核",
+    "证据链真实性与完整性，系统仅依据 evidence_status 接收人工标记",
+    "是否存在足够应纳税所得额，MVP按PRD统一假设为足够",
+    "不适用一次性扣除时的常规税法折旧基线",
+    "2026以外扣除所属年度的完整政策边界"
+  ]
+}

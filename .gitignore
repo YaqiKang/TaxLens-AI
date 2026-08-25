@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.coverage
+.DS_Store
+node_modules/
+previews/*.png
+.venv/
+.streamlit/secrets.toml
+.env
+.env.*
+!.env.example
+.taxlens_runtime/

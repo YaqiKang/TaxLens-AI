@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "knowledge_base_updated_at": "2026-08-25",
+  "scope": "中国企业所得税场景下，新购设备一次性税前扣除政策影响评估",
+  "governance": {
+    "official_sources_only": true,
+    "open_internet_retrieval": false,
+    "third_party_only_deterministic_basis_allowed": false
+  },
+  "chunks": [
+    {
+      "chunk_id": "MOF_STA_2023_37_ARTICLE_1",
+      "policy_name": "关于设备、器具扣除有关企业所得税政策的公告",
+      "document_number": "财政部 税务总局公告2023年第37号",
+      "issuing_authority": "财政部、国家税务总局",
+      "effective_or_applicable_period": "2024-01-01至2027-12-31新购进的设备、器具",
+      "source_url": "https://shanghai.chinatax.gov.cn/zcfw/zcfgk/qysds/202309/t468599.html",
+      "clause_reference": "第一条",
+      "relevant_text": "受控摘要：企业在2024年1月1日至2027年12月31日期间新购进的设备、器具，单位价值不超过500万元的，允许按规定选择一次性税前扣除。",
+      "knowledge_base_updated_at": "2026-08-25",
+      "reason_codes": ["UNIT_BASIS_OVER_THRESHOLD", "ACQUISITION_OUTSIDE_POLICY_PERIOD", "ALL_DETERMINISTIC_CONDITIONS_PASSED", "POLICY_CHOICE_REQUIRED"],
+      "tags": ["购进期间", "500万元", "单位价值", "选择适用", "设备器具"]
+    },
+    {
+      "chunk_id": "MOF_STA_2023_37_ARTICLE_2",
+      "policy_name": "关于设备、器具扣除有关企业所得税政策的公告",
+      "document_number": "财政部 税务总局公告2023年第37号",
+      "issuing_authority": "财政部、国家税务总局",
+      "effective_or_applicable_period": "与公告第一条规定的资产购进政策窗口配套适用",
+      "source_url": "https://shanghai.chinatax.gov.cn/zcfw/zcfgk/qysds/202309/t468599.html",
+      "clause_reference": "第二条",
+      "relevant_text": "受控摘要：设备、器具是指除房屋、建筑物以外的固定资产。",
+      "knowledge_base_updated_at": "2026-08-25",
+      "reason_codes": ["BUILDING_EXCLUDED", "ASSET_NATURE_UNCERTAIN", "ASSET_CLASSIFICATION_CONFLICT"],
+      "tags": ["房屋", "建筑物", "资产性质", "设备器具"]
+    },
+    {
+      "chunk_id": "STA_2018_46_ARTICLE_1",
+      "policy_name": "国家税务总局关于设备 器具扣除有关企业所得税政策执行问题的公告",
+      "document_number": "国家税务总局公告2018年第46号",
+      "issuing_authority": "国家税务总局",
+      "effective_or_applicable_period": "全文有效；作为新购进及购进时点的执行口径依据",
+      "source_url": "https://fgk.chinatax.gov.cn/zcfgk/c100012/c5194819/content.html",
+      "clause_reference": "第一条",
+      "relevant_text": "受控摘要：新购进包括以货币形式购进的使用过的固定资产；普通购进按发票开具时间、分期付款或赊销按到货时间、自行建造按竣工结算时间确认购进时点。",
+      "knowledge_base_updated_at": "2026-08-25",
+      "reason_codes": ["ACQUISITION_OUTSIDE_POLICY_PERIOD", "ALL_DETERMINISTIC_CONDITIONS_PASSED"],
+      "tags": ["新购进", "二手设备", "普通购进", "分期赊销", "自行建造", "购进时点"]
+    },
+    {
+      "chunk_id": "STA_2018_46_ARTICLE_2",
+      "policy_name": "国家税务总局关于设备 器具扣除有关企业所得税政策执行问题的公告",
+      "document_number": "国家税务总局公告2018年第46号",
+      "issuing_authority": "国家税务总局",
+      "effective_or_applicable_period": "全文有效；作为扣除所属年度的执行口径依据",
+      "source_url": "https://fgk.chinatax.gov.cn/zcfgk/c100012/c5194819/content.html",
+      "clause_reference": "第二条",
+      "relevant_text": "受控摘要：固定资产在投入使用月份的次月所属年度一次性税前扣除。",
+      "knowledge_base_updated_at": "2026-08-25",
+      "reason_codes": ["DEDUCTION_YEAR_MISMATCH", "ALL_DETERMINISTIC_CONDITIONS_PASSED"],
+      "tags": ["投入使用", "次月", "扣除所属年度"]
+    },
+    {
+      "chunk_id": "STA_2018_46_CHOICE_AND_EVIDENCE",
+      "policy_name": "国家税务总局关于设备 器具扣除有关企业所得税政策执行问题的公告",
+      "document_number": "国家税务总局公告2018年第46号",
+      "issuing_authority": "国家税务总局",
+      "effective_or_applicable_period": "全文有效；作为选择享受及留存备查的执行口径依据",
+      "source_url": "https://fgk.chinatax.gov.cn/zcfgk/c100012/c5194819/content.html",
+      "clause_reference": "第三至第五条",
+      "relevant_text": "受控摘要：企业可根据自身生产经营核算需要选择享受，并按规定进行税会处理和留存备查资料。",
+      "knowledge_base_updated_at": "2026-08-25",
+      "reason_codes": ["POLICY_CHOICE_REQUIRED", "EVIDENCE_INCOMPLETE", "CLAIM_STATUS_REVIEW", "ALL_DETERMINISTIC_CONDITIONS_PASSED"],
+      "tags": ["选择享受", "留存备查", "证据", "税会差异", "已享受"]
+    }
+  ]
+}

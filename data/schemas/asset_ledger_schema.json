@@ -1,0 +1,33 @@
+{
+  "sheet_name": "asset_ledger",
+  "max_file_size_bytes": 2097152,
+  "min_records": 1,
+  "max_records": 500,
+  "columns": [
+    "asset_id",
+    "asset_name",
+    "asset_description",
+    "fixed_asset_category",
+    "acquisition_method",
+    "invoice_date",
+    "arrival_date",
+    "completion_settlement_date",
+    "placed_in_service_date",
+    "unit_tax_basis",
+    "quantity",
+    "building_flag",
+    "accounting_useful_life_years",
+    "residual_rate",
+    "depreciation_method",
+    "current_year_accounting_depreciation",
+    "policy_already_claimed",
+    "evidence_status",
+    "note"
+  ],
+  "conditional_required": {
+    "普通购进": "invoice_date",
+    "分期或赊销": "arrival_date",
+    "自行建造": "completion_settlement_date"
+  }
+}
+
