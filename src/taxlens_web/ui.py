@@ -69,6 +69,12 @@ def apply_page_style() -> None:
       .meta-chip { padding:7px 10px; background:#F6F8FA; border:1px solid var(--line);
         border-radius:7px; color:#486275; font-size:.78rem; white-space:nowrap; }
       .meta-chip strong { color:var(--ink); }
+      .primary-nav-spacer { height:12px; }
+      .primary-nav-bottom { height:10px; }
+      .st-key-nav_upload button, .st-key-nav_check button, .st-key-nav_overview button,
+      .st-key-nav_detail button, .st-key-nav_review button {
+        min-height:50px; font-size:1.02rem; font-weight:700;
+      }
       .page-title { font-size:2rem; line-height:1.18; font-weight:790; color:var(--ink); margin:.7rem 0 .35rem; }
       .page-lead { color:var(--muted); font-size:1.06rem; margin-bottom:1.25rem; }
       .eyebrow { color:var(--teal); font-size:.8rem; font-weight:750; letter-spacing:.08em;
@@ -174,13 +180,14 @@ def render_product_header(policy: dict) -> None:
       <div class="header-meta">
         <div class="meta-chip"><strong>{PRODUCT_VERSION}</strong></div>
         <div class="meta-chip">政策版本 · <strong>{document}</strong></div>
-        <div class="meta-chip">知识库 · <strong>{updated}</strong></div>
+        <div class="meta-chip">知识库快照 · <strong>{updated}</strong></div>
       </div>
     </div>
     """, unsafe_allow_html=True)
 
 
 def render_navigation() -> None:
+    st.markdown('<div class="primary-nav-spacer"></div>', unsafe_allow_html=True)
     columns = st.columns([1, 1, 1, 1, 1])
     current = st.session_state.page
     for column, (target, label) in zip(columns, NAV_ITEMS):
@@ -193,6 +200,7 @@ def render_navigation() -> None:
                         st.session_state.detail_asset_id = result.assessments[0].asset_id
                 st.session_state.page = target
                 st.rerun()
+    st.markdown('<div class="primary-nav-bottom"></div>', unsafe_allow_html=True)
 
 
 def load_policy(root: Path) -> dict:
@@ -263,7 +271,7 @@ def render_upload_page(root: Path, policy: dict) -> None:
     st.markdown(f"""
     <div class="policy-grid">
       <div class="policy-card"><div class="policy-label">当前政策版本</div><div class="policy-value">{document}</div></div>
-      <div class="policy-card"><div class="policy-label">最近知识库更新时间</div><div class="policy-value">{updated}</div></div>
+      <div class="policy-card"><div class="policy-label">受控知识库快照更新时间</div><div class="policy-value">{updated}</div></div>
       <div class="policy-card"><div class="policy-label">当前评估年度</div><div class="policy-value">2026 · 固定Demo口径</div></div>
     </div>
     """, unsafe_allow_html=True)
