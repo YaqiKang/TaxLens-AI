@@ -32,7 +32,7 @@ STATUS_TONE = {
     "需人工复核": "status-review",
 }
 
-PRODUCT_VERSION = "Competition MVP · Phase 4.2"
+PRODUCT_VERSION = "企业所得税 · 专项政策评估"
 NAV_ITEMS = [
     ("upload", "任务中心"),
     ("check", "数据质量"),
@@ -214,6 +214,43 @@ def format_money(value: Decimal | float | int | None) -> str:
     return f"¥{Decimal(str(value)):,.2f}"
 
 
+def display_source_name(value: str | None) -> str:
+    """Return a professional display label without changing the underlying file."""
+    if value == "TaxLens_AI_Official_Demo_Asset_Ledger.xlsx":
+        return "TaxLens_AI_示例资产台账.xlsx"
+    return value or "—"
+
+
+def professionalize_display_text(value: str) -> str:
+    """Remove internal delivery-stage wording from user-facing explanations only."""
+    replacements = {
+        "冻结Phase 1规则": "已验证确定性规则",
+        "Phase 1确定性评估": "确定性评估",
+        "冻结规则": "已验证规则",
+        "结构化字段满足MVP确定性政策条件": "结构化字段满足当前确定性政策条件",
+        "当前MVP": "当前评估范围",
+    }
+    rendered = value
+    for source, target in replacements.items():
+        rendered = rendered.replace(source, target)
+    return rendered
+
+
+def provider_status_label(status: str) -> str:
+    """Translate implementation status codes into a user-facing service state."""
+    if status == "disabled_no_api_key":
+        return "当前未启用（确定性评估正常运行）"
+    if status == "configured":
+        return "已启用"
+    if status == "not_needed":
+        return "本项无需调用"
+    if status == "success":
+        return "已完成"
+    if status.startswith("degraded_"):
+        return "已安全降级为人工复核"
+    return "状态已记录"
+
+
 def persist_upload(uploaded_file) -> tuple[str, str]:
     payload = uploaded_file.getvalue()
     digest = hashlib.sha256(payload).hexdigest()
@@ -257,7 +294,7 @@ def render_upload_page(root: Path, policy: dict) -> None:
         if st.button("开始评估", key="begin_assessment", type="primary", width="stretch"):
             st.session_state.task_setup_open = True
     with action_right:
-        if st.button("加载Demo案例", key="load_demo", width="stretch"):
+        if st.button("载入示例资产台账", key="load_demo", width="stretch"):
             demo_path = root / "data/demo/TaxLens_AI_Official_Demo_Asset_Ledger.xlsx"
             st.session_state.source_path = str(demo_path)
             st.session_state.source_name = demo_path.name
@@ -273,7 +310,7 @@ def render_upload_page(root: Path, policy: dict) -> None:
     <div class="policy-grid">
       <div class="policy-card"><div class="policy-label">当前政策版本</div><div class="policy-value">{document}</div></div>
       <div class="policy-card"><div class="policy-label">受控知识库快照更新时间</div><div class="policy-value">{updated}</div></div>
-      <div class="policy-card"><div class="policy-label">当前评估年度</div><div class="policy-value">2026 · 固定Demo口径</div></div>
+      <div class="policy-card"><div class="policy-label">当前评估年度</div><div class="policy-value">2026 · 当前评估口径</div></div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -281,7 +318,7 @@ def render_upload_page(root: Path, policy: dict) -> None:
     st.markdown('<div class="page-lead">确认测算参数并选择资产台账。评估年度为冻结范围，不允许修改。</div>', unsafe_allow_html=True)
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        st.text_input("评估年度", value="2026", disabled=True, help="当前MVP固定为2026")
+        st.text_input("评估年度", value="2026", disabled=True, help="当前评估范围固定为2026年度")
     with c2:
         cit_rate = st.number_input(
             "企业所得税税率（%）", min_value=0.0, max_value=100.0, value=25.0, step=0.5
@@ -318,7 +355,7 @@ def render_upload_page(root: Path, policy: dict) -> None:
             persist_upload(uploaded)
         if st.session_state.source_name:
             st.markdown(
-                f'<div class="success-note"><b>已选择文件</b><br>{st.session_state.source_name}</div>',
+                f'<div class="success-note"><b>已选择文件</b><br>{display_source_name(st.session_state.source_name)}</div>',
                 unsafe_allow_html=True,
             )
 
@@ -357,7 +394,7 @@ def render_check_page() -> None:
     check = st.session_state.check_result
     if check is None:
         st.markdown(
-            '<div class="empty-state"><b>尚未创建数据检查任务</b><br>请先在任务中心选择Excel台账或加载Demo案例。</div>',
+            '<div class="empty-state"><b>尚未创建数据检查任务</b><br>请先在任务中心选择Excel台账或载入示例资产台账。</div>',
             unsafe_allow_html=True,
         )
         if st.button("前往任务中心", key="empty_to_home_check", type="primary"):
@@ -366,7 +403,7 @@ def render_check_page() -> None:
         return
 
     st.markdown(
-        f'<div class="page-lead">检查对象 · {st.session_state.source_name or Path(check.source_path).name}</div>',
+        f'<div class="page-lead">检查对象 · {display_source_name(st.session_state.source_name or Path(check.source_path).name)}</div>',
         unsafe_allow_html=True,
     )
     m1, m2, m3, m4 = st.columns(4)
@@ -445,7 +482,7 @@ def render_check_page() -> None:
                     )
                     st.session_state.agent_run = None
                     st.session_state.agent_error = (
-                        "Agent增强层未完成，已安全降级为Phase 1确定性评估；状态与金额未受影响。"
+                        "智能语义增强未完成，系统已安全切换至确定性评估；状态与金额未受影响。"
                     )
                     st.session_state.page = "overview"
                     st.rerun()
@@ -491,14 +528,15 @@ def _render_agent_trace(agent_run) -> None:
         items.append(
             f'<div class="trace-item"><div class="trace-icon {"degraded" if degraded else ""}">{icon}</div>'
             f'<div><div class="trace-label">{step.label}</div>'
-            f'<div class="trace-summary">{step.summary}</div></div></div>'
+            f'<div class="trace-summary">{professionalize_display_text(step.summary)}</div></div></div>'
         )
     st.markdown(f'<div class="trace-grid">{"".join(items)}</div>', unsafe_allow_html=True)
     st.caption(
-        f"模型增强状态：{agent_run.provider_status}。仅展示工具执行摘要，不展示模型内部推理。"
+        f"智能语义增强：{provider_status_label(agent_run.provider_status)}。"
+        "页面仅展示工具执行摘要，不展示模型内部推理。"
     )
     for warning in agent_run.warnings:
-        st.info(warning)
+        st.info(professionalize_display_text(warning))
 
 
 def _render_asset_detail(asset_id: str, rows: list[dict], result) -> None:
@@ -513,7 +551,7 @@ def _render_asset_detail(asset_id: str, rows: list[dict], result) -> None:
     c4.metric("扣除所属年度", row["扣除所属年度"] or "—")
     st.write("**主要原因**")
     for message in assessment.reason_messages:
-        st.write(f"- {message}")
+        st.write(f"- {professionalize_display_text(message)}")
     if assessment.calculations:
         calc = assessment.calculations
         x1, x2, x3, x4 = st.columns(4)
@@ -530,13 +568,13 @@ def _render_asset_detail(asset_id: str, rows: list[dict], result) -> None:
 
 
 def render_overview_page() -> None:
-    st.markdown('<div class="eyebrow">Policy Impact Dashboard</div>', unsafe_allow_html=True)
+    st.markdown('<div class="eyebrow">Policy Impact Assessment</div>', unsafe_allow_html=True)
     st.markdown('<div class="page-title">政策影响总览</div>', unsafe_allow_html=True)
     result = st.session_state.assessment_result
     check = st.session_state.check_result
     if result is None or check is None:
         st.markdown(
-            '<div class="empty-state"><b>尚无可展示的评估结果</b><br>完成数据质量检查并运行政策影响评估后，Dashboard将在此生成。</div>',
+            '<div class="empty-state"><b>尚无可展示的评估结果</b><br>完成数据质量检查并运行政策影响评估后，评估总览将在此生成。</div>',
             unsafe_allow_html=True,
         )
         if st.button("前往任务中心", key="empty_to_home_overview", type="primary"):
@@ -546,7 +584,7 @@ def render_overview_page() -> None:
 
     summary = summarize_assessment(result)
     st.markdown(
-        f'<div class="page-lead">任务对象 · {st.session_state.source_name}　|　评估年度 · 2026</div>',
+        f'<div class="page-lead">任务对象 · {display_source_name(st.session_state.source_name)}　|　评估年度 · 2026</div>',
         unsafe_allow_html=True,
     )
     k1, k2, k3, k4, k5 = st.columns(5)
@@ -567,7 +605,7 @@ def render_overview_page() -> None:
     with chart_col:
         _status_distribution_visual(summary.status_counts)
     reason_counter = Counter(
-        assessment.reason_messages[0] if assessment.reason_messages else "未提供原因"
+        professionalize_display_text(assessment.reason_messages[0]) if assessment.reason_messages else "未提供原因"
         for assessment in result.assessments
     )
     reason_table = pd.DataFrame([
@@ -577,7 +615,10 @@ def render_overview_page() -> None:
     with reason_col:
         st.dataframe(reason_table, width="stretch", hide_index=True, height=220)
 
-    rows = build_asset_rows(result, check.records)
+    rows = [
+        {**row, "主要原因": professionalize_display_text(row["主要原因"])}
+        for row in build_asset_rows(result, check.records)
+    ]
     st.subheader("影响金额排序")
     impact_rows = [
         {
@@ -728,7 +769,7 @@ def render_detail_page() -> None:
     st.markdown(f"""
     <div class="evidence-flow">
       <div class="flow-node">事实<span>资产台账与结构化字段</span></div>
-      <div class="flow-node">规则<span>冻结政策条件与原因代码</span></div>
+      <div class="flow-node">规则<span>已验证政策条件与原因代码</span></div>
       <div class="flow-node">判断<span>{assessment.status.value}</span></div>
       <div class="flow-node">影响<span>{format_money(assessment.calculations.cit_timing_impact) if assessment.calculations else '不生成金额推断'}</span></div>
       <div class="flow-node">行动<span>{action_text}</span></div>
@@ -751,7 +792,7 @@ def render_detail_page() -> None:
     b2.metric("置信度", f"{classification.confidence:.0%}" if classification.called else "未调用")
     b3.metric("触发人工复核", "是" if classification.requires_human_review else "否")
     st.write(classification.reason)
-    st.caption(f"调用状态：{classification.provider_status}；该建议不构成税务结论。")
+    st.caption(f"调用状态：{provider_status_label(classification.provider_status)}；该建议不构成税务结论。")
 
     st.subheader("C. 政策条件判断")
     st.dataframe(
@@ -804,7 +845,11 @@ def render_detail_page() -> None:
         st.info("该资产当前状态不生成政策金额测算，系统未对缺失或需复核事项作金额推断。")
 
     st.subheader("F. 当前评估结论")
-    st.markdown(f'<div class="detail-card"><b>{assessment.status.value}</b><br>{agent_asset.explanation}</div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="detail-card"><b>{assessment.status.value}</b><br>'
+        f'{professionalize_display_text(agent_asset.explanation)}</div>',
+        unsafe_allow_html=True,
+    )
     st.caption(
         f"证据核验状态：{verification.evidence_status}。"
         + (f" 缺口：{'、'.join(verification.missing_items)}。" if verification.missing_items else " 资产事实、原因代码、政策来源及适用计算依据已核验。")
@@ -815,7 +860,10 @@ def render_detail_page() -> None:
         AssessmentStatus.NEEDS_INFORMATION,
         AssessmentStatus.NEEDS_MANUAL_REVIEW,
     }:
-        review_reasons = "".join(f"<li>{message}</li>" for message in assessment.reason_messages)
+        review_reasons = "".join(
+            f"<li>{professionalize_display_text(message)}</li>"
+            for message in assessment.reason_messages
+        )
         st.markdown(
             f'<div class="block-note"><b>{action_text}</b><ul>{review_reasons}</ul>'
             '当前页面为只读版本，不执行人工确认、字段修改或重新评估。</div>',
@@ -859,7 +907,10 @@ def render_review_page() -> None:
             st.rerun()
         return
 
-    all_rows = build_asset_rows(result, check.records)
+    all_rows = [
+        {**row, "主要原因": professionalize_display_text(row["主要原因"])}
+        for row in build_asset_rows(result, check.records)
+    ]
     review_rows = [row for row in all_rows if row["状态"] in {"待补充", "需人工复核"}]
     manual_count = sum(row["状态"] == "需人工复核" for row in review_rows)
     pending_count = sum(row["状态"] == "待补充" for row in review_rows)
@@ -887,7 +938,7 @@ def render_review_page() -> None:
             "原始类别": row["固定资产类别"],
             "状态": row["状态"],
             "evidence_status": evidence_status,
-            "复核原因": row["主要原因"],
+            "复核原因": professionalize_display_text(row["主要原因"]),
         })
     if review_display:
         st.dataframe(pd.DataFrame(review_display), width="stretch", hide_index=True, height=360)
@@ -909,7 +960,7 @@ def render_review_page() -> None:
 
     st.markdown(
         '<div class="notice"><b>清单边界</b><br>该页面只汇总现有四级状态和原因代码。'
-        '复杂人工确认、字段修改、意见留痕与重新评估不在本阶段范围内。</div>',
+        '复杂人工确认、字段修改、意见留痕与重新评估需在后续人工处理流程中完成。</div>',
         unsafe_allow_html=True,
     )
 
